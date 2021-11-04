@@ -1,8 +1,12 @@
 """
 Auxiliary functions for Main.py (in order to keep the main code clean).
+
 Annual estimation for Input Output Tables based on the methodology proposed by Guilhoto (2010) and Barry-Miller (2009).
+
 Based on official Resources and Uses tables published by IBGE in the System of National Accounts (3rd edition).
+
 Authors: João Maria de Oliveira and Vinícius de Almeida Nery Ferreira (Ipea-DF).
+
 E-mails: joao.oliveira@ipea.gov.br and vinicius.nery@ipea.gov.br (or vnery5@gmail.com).
 """
 
@@ -81,6 +85,7 @@ def distribution_matrix_calcul(mIntermConsum, mDemand):
         mDistribution: consumption array in relative/percentage terms
         mTotalConsum: mIntermConsum and mDemand concatenated horizontally
     """
+
     ## Disabling warnings for division by 0 (they are handled after)
     np.seterr(divide='ignore', invalid='ignore')
 
@@ -102,8 +107,8 @@ def distribution_matrix_calcul(mIntermConsum, mDemand):
 def calculation_margin(mAlpha, mMatrixInput, nColRef, vRowErase):
     """
     Returns the margin matrix/array (transport, trade, IPI, ICMS and other taxes).
-    A important point: alongside other calculation, it assumes that the margin are distributed
-    in the same way as the consumption of each product is distributed.
+    A important point: alongside other calculations, it assumes that margins are distributed
+    in the same way as the market price consumption of each product.
     :param mAlpha: distribution matrix, calculated using the distribution_matrix_calc function
     :param mMatrixInput: offer matrix
     :param nColRef: number of the desired column (transport, trade...)
@@ -137,7 +142,7 @@ def calculation_margin(mAlpha, mMatrixInput, nColRef, vRowErase):
     mMultip = np.nan_to_num(mMultip, nan=0, posinf=0, neginf=0)
 
     # Forcing the sum of margins to be 0 for each sector, multiplying the share of trade/transport margins
-    # of each trade/transport product by the total margins paid by sector c = j
+    # of each trade/transport product by the total margins paid by sector i = j
     mMatrixOutput[vRowErase, :] = -mMultip[:, None] * vTotMarginSector[None, :]
 
     return mMatrixOutput
@@ -224,7 +229,7 @@ def load_disaggregations(sDirectoryInput, sFileDesagregacao, sSheetDesagregacoes
     :param sSheetDesagregacoes: sheet name
     :param nNumDisaggreg: number of sectors/products to be aggregated/disaggregated
         (see load_NumAggreg_Disaggreg function)
-    :param nIndice: number of sectors/products in matrix (set by nDimensao)
+    :param nIndice: number of sectors/products in matrix (set by nDimension)
     :return:
         mPosDisaggreg: array (nNumDisaggred x 1) containing the indices of the sectors/products
             to be disaggregated in the original IBGE matrix
@@ -412,12 +417,12 @@ def name_disaggregation(vNames, nNumDisaggreg, vPosDisaggreg, vNamesDisaggreg, n
     return vNewName
 
 # ============================================================================================
-def gdp_calculation(mMIPGeral, nSector, nDimensao):
+def gdp_calculation(mMIPGeral, nSector, nDimension):
     """
     Calculates Total GDP and each one of its components
     :param mMIPGeral: MIP matrix
     :param nSector: number of sectors (WITH the disaggregations)
-    :param nDimensao: dimension of the estimated MIP (0, 1, 2 or 3)
+    :param nDimension: dimension of the estimated MIP (0, 1, 2 or 3)
     :return:
         vGDP: 17x1 array containing the GDP and each of its components
             GDP is calculated in all three ways possible (production, income and expenditure)
@@ -460,7 +465,7 @@ def gdp_calculation(mMIPGeral, nSector, nDimensao):
 
     ## Calculating salaries, capital and autonomous income and taxes on imports
     # n = 51 is different due to the presence of two export columns
-    if nDimensao == 2:
+    if nDimension == 2:
         nRemunEmpregados = mMIPGeral[nSector + 8, nSector]
         nEOB_RM = mMIPGeral[nSector + 14, nSector]
         nImpLiqProdImport = nImpostos + mMIPGeral[nSector + 15, nSector] + mMIPGeral[nSector + 16, nSector]
@@ -489,7 +494,7 @@ def gdp_calculation(mMIPGeral, nSector, nDimensao):
 
     ## Calculating total exports, government consumption...
     # n = 51 is different due to the presence of two export columns
-    if nDimensao == 2:
+    if nDimension == 2:
         nExportTotal = mMIPGeral[nSector + 6, nSector + 1] + mMIPGeral[nSector + 6, nSector + 2]
         nGovernConsum = mMIPGeral[nSector + 6, nSector + 3]
         nISFLSFConsum = mMIPGeral[nSector + 6, nSector + 4]

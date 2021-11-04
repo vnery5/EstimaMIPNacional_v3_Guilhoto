@@ -1,7 +1,10 @@
 """
 Annual estimation for Input Output Tables based on the methodology proposed by Guilhoto (2010) and Barry-Miller (2009).
+
 Based on official Resources and Uses tables published by IBGE in the System of National Accounts (3rd edition).
+
 Authors: João Maria de Oliveira and Vinícius de Almeida Nery Ferreira (Ipea-DF).
+
 E-mails: joao.oliveira@ipea.gov.br and vinicius.nery@ipea.gov.br (or vnery5@gmail.com).
 """
 
@@ -517,7 +520,11 @@ if __name__ == '__main__':
     # vColsLabel.append(vNameCIDemand)
 
     ## Writing Excel file to Output directory
-    sFileSheet = f"MIP_{nYear}_{nSectors}{sAdjustMargins}.xlsx"
+    # Indicators of number of sectors
+    nSectorsOutputFile = f"{nSectors}" if nSectors <= 68 else "68+"
+
+    # Title string and calling function to write data
+    sFileSheet = f"MIP_{nYear}_{nSectorsOutputFile}{sAdjustMargins}.xlsx"
     Support.write_data_excel(sFileSheet, vSheetName, vDataSheet, vRowsLabel, vColsLabel)
 
     ## Calculating total execution time
