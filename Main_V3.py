@@ -480,7 +480,7 @@ if __name__ == '__main__':
     ## List that contains the data to be written in each sheet
     vDataSheet = [mAddedValue, mDemand, mIntermConsum, mOffer, mProduction, vImport,
                   mDistribution, mMarginTrade, mMarginTransport, mIPI, mICMS, mOtherTaxes,
-                  mDistributionWithoutExport, mImport, mImportTax, mIntermConsumBasePrice,
+                  mDistributionWithoutExport, mImport, mImportTax, mConsumBasePrice,
                   mBn, mBm, mD, mA, mZ, mY, mLeontief,
                   mMIPGeral, vGDP
                   ]
@@ -488,7 +488,7 @@ if __name__ == '__main__':
     ## Sheet Names
     vSheetName = ["VA", "Demanda", "CI", "Oferta", "Produção", "Importação",
                   "Distribuição", "MGC", "MGT", "IPI", "ICMS", "OILL",
-                  "Distribuição_2", "Importação_2", "II", "CI Pb",
+                  "Distribuição_2", "Importação_2", "II", "Usos Pb",
                   "Matriz_Bn", "Matriz_Bm", "Matriz_D", "Matriz_A", "Matriz_Z", "Matriz_Y", "Leontief",
                   "MIP", "PIB"
                   ]
@@ -509,7 +509,7 @@ if __name__ == '__main__':
 
     vColsLabel = [vNameSector, vNameDemand, vNameSector, vNameOffer, vNameSector, vNameImport,
                   vNameCIDemand, vNameCIDemand, vNameCIDemand, vNameCIDemand, vNameCIDemand, vNameCIDemand,
-                  vNameCIDemand, vNameCIDemand, vNameCIDemand, vNameSector,
+                  vNameCIDemand, vNameCIDemand, vNameCIDemand, vNameCIDemand,
                   vNameSector, vNameSector, vNameProduct, vNameSector, vNameSector, vNameDemand, vNameSector,
                   vNamesMIP_Cols, vNameColGDP
                   ]
