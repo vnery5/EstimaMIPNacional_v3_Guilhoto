@@ -110,7 +110,7 @@ def calculation_margin(mAlpha, mMatrixInput, nColRef, vRowErase):
     A important point: alongside other calculations, it assumes that margins are distributed
     in the same way as the market price consumption of each product.
     :param mAlpha: distribution matrix, calculated using the distribution_matrix_calc function
-    :param mMatrixInput: offer matrix
+    :param mMatrixInput: supply matrix
     :param nColRef: number of the desired column (transport, trade...)
     :param vRowErase: rows to exclude
     :return: mMatrixOutput: nProduct x nSector array containing the margins of each product and sector
@@ -131,19 +131,19 @@ def calculation_margin(mAlpha, mMatrixInput, nColRef, vRowErase):
 
     ## For each sector, get the total margins paid in all products EXCEPT those of trade/transport
     # Getting correspondence of product NOT in trade/transport
-    mMarginSectors = np.ones(mMatrixOutput.shape[0], dtype=bool)
-    mMarginSectors[vRowErase] = False
+    vMarginSectors = np.ones(mMatrixOutput.shape[0], dtype=bool)
+    vMarginSectors[vRowErase] = False
 
-    # For each sector (column), add up the results of the above sectors
-    vTotMarginSector = np.sum(mMatrixOutput[mMarginSectors, :], axis=0)
+    # For each sector (column), add up the results of the above products (not included in trade or transport)
+    vTotMarginSector = np.sum(mMatrixOutput[vMarginSectors, :], axis=0)
 
-    ## Get percentage share of margins held by each trade/transport sector (compared to the margin's total)
-    mMultip = vCol[vRowErase] / nTotMargin
-    mMultip = np.nan_to_num(mMultip, nan=0, posinf=0, neginf=0)
+    ## Get percentage share of margins held by each trade/transport product (compared to the margin's total)
+    vMultip = vCol[vRowErase] / nTotMargin
+    vMultip = np.nan_to_num(vMultip, nan=0, posinf=0, neginf=0)
 
     # Forcing the sum of margins to be 0 for each sector, multiplying the share of trade/transport margins
     # of each trade/transport product by the total margins paid by sector i = j
-    mMatrixOutput[vRowErase, :] = -mMultip[:, None] * vTotMarginSector[None, :]
+    mMatrixOutput[vRowErase, :] = -vMultip[:, None] * vTotMarginSector[None, :]
 
     return mMatrixOutput
 
