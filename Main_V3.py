@@ -23,11 +23,14 @@ if __name__ == '__main__':
     # ... size of MIP (possible values: 0 - 12x12; 1 - 20x20; 2 - 107X51; 3 - 128x68)
     nDimension = 3
     # ... year to be estimated
-    nYear = 2018
+    nYear = 2011
 
     ## Constants that identify software version and software config version
     sVersionConfigSoft = "3.0"
     sVersionSoft = "3.0"
+
+    ## Disaggregate or aggregate products/sectors?
+    bAggregateDisaggregate = False  # True or False
 
     ## Lists that contain the correspondent parameters for each MIP Dimension
     vProducts = [12, 20, 107, 128]  # number of products
@@ -48,6 +51,7 @@ if __name__ == '__main__':
     ## Adjust trade/transport margins to only one product/activity?
     lAdjustMargins = False  # True or False
     sAdjustMargins = "_Agreg" if lAdjustMargins else ""
+    nAdjust = 0
 
     ## Number of final demand columns in IBGE's TRU demand table (in 107x68, there are two export columns)
     nColsDemand = 6 if nDimension != 2 else 7
@@ -157,53 +161,52 @@ if __name__ == '__main__':
     # ==================================================================================================================
     # Import values of disaggregation
     # ==================================================================================================================
-    nNumDisaggregSectors, nNumDisaggregProducts = Support.load_number_disaggregations(sDirectoryBaseInput,
-                                                                                      sFileDesagregacao,
-                                                                                      sSheetNumeroDesagregacoes)
-    # nNumDisaggregSectors = 0
-    # nNumDisaggregProducts = 0
-    if (nNumDisaggregSectors > 0) and (nDimension == 3):
-        mPosDisaggreg, mMultipDisaggreg, vNameSectorDisaggreg, nNewSectors = \
-            Support.load_disaggregations(sDirectoryBaseInput, sFileDesagregacao, sSheetDesagregacaoSetor,
-                                         nNumDisaggregSectors, nSectors)
 
-        ## Disaggregating the necessary sectors (columns) in each matrix
-        mIntermConsum = Support.column_sector_disaggregation(mIntermConsum, nNumDisaggregSectors, mPosDisaggreg,
-                                                             mMultipDisaggreg, nNewSectors, nSectors)
-        mAddedValue = Support.column_sector_disaggregation(mAddedValue, nNumDisaggregSectors, mPosDisaggreg,
-                                                           mMultipDisaggreg, nNewSectors, nSectors)
-        mProduction = Support.column_sector_disaggregation(mProduction, nNumDisaggregSectors, mPosDisaggreg,
-                                                           mMultipDisaggreg, nNewSectors, nSectors)
-        vNameSector = Support.name_disaggregation(vNameSector, nNumDisaggregSectors, mPosDisaggreg,
-                                                  vNameSectorDisaggreg, nSectors)
-        nSectors = nNewSectors
+    if bAggregateDisaggregate:
+        nNumDisaggregSectors, nNumDisaggregProducts = Support.load_number_disaggregations(sDirectoryBaseInput,
+                                                                                          sFileDesagregacao,
+                                                                                          sSheetNumeroDesagregacoes)
 
-    if (nNumDisaggregProducts > 0) and (nDimension == 3):
-        mPosDisaggreg, mMultipDisaggreg, vNameProductDisaggreg, nNewProducts = \
-            Support.load_disaggregations(sDirectoryBaseInput, sFileDesagregacao, sSheetDesagregacaoProduto,
-                                         nNumDisaggregProducts, nProducts)
+        if (nNumDisaggregSectors > 0) and (nDimension == 3):
+            mPosDisaggreg, mMultipDisaggreg, vNameSectorDisaggreg, nNewSectors = \
+                Support.load_disaggregations(sDirectoryBaseInput, sFileDesagregacao, sSheetDesagregacaoSetor,
+                                             nNumDisaggregSectors, nSectors)
 
-        ## Disaggregating the necessary products (rows) in each matrix
-        mIntermConsum = Support.row_product_disaggregation(mIntermConsum, nNumDisaggregProducts, mPosDisaggreg,
-                                                           mMultipDisaggreg, nNewProducts, nProducts)
-        mProduction = Support.row_product_disaggregation(mProduction, nNumDisaggregProducts, mPosDisaggreg,
+            ## Disaggregating the necessary sectors (columns) in each matrix
+            mIntermConsum = Support.column_sector_disaggregation(mIntermConsum, nNumDisaggregSectors, mPosDisaggreg,
+                                                                 mMultipDisaggreg, nNewSectors, nSectors)
+            mAddedValue = Support.column_sector_disaggregation(mAddedValue, nNumDisaggregSectors, mPosDisaggreg,
+                                                               mMultipDisaggreg, nNewSectors, nSectors)
+            mProduction = Support.column_sector_disaggregation(mProduction, nNumDisaggregSectors, mPosDisaggreg,
+                                                               mMultipDisaggreg, nNewSectors, nSectors)
+            vNameSector = Support.name_disaggregation(vNameSector, nNumDisaggregSectors, mPosDisaggreg,
+                                                      vNameSectorDisaggreg, nSectors)
+            nSectors = nNewSectors
+
+        if (nNumDisaggregProducts > 0) and (nDimension == 3):
+            mPosDisaggreg, mMultipDisaggreg, vNameProductDisaggreg, nNewProducts = \
+                Support.load_disaggregations(sDirectoryBaseInput, sFileDesagregacao, sSheetDesagregacaoProduto,
+                                             nNumDisaggregProducts, nProducts)
+
+            ## Disaggregating the necessary products (rows) in each matrix
+            mIntermConsum = Support.row_product_disaggregation(mIntermConsum, nNumDisaggregProducts, mPosDisaggreg,
+                                                               mMultipDisaggreg, nNewProducts, nProducts)
+            mProduction = Support.row_product_disaggregation(mProduction, nNumDisaggregProducts, mPosDisaggreg,
+                                                             mMultipDisaggreg, nNewProducts, nProducts)
+            mDemand = Support.row_product_disaggregation(mDemand, nNumDisaggregProducts, mPosDisaggreg,
                                                          mMultipDisaggreg, nNewProducts, nProducts)
-        mDemand = Support.row_product_disaggregation(mDemand, nNumDisaggregProducts, mPosDisaggreg,
-                                                     mMultipDisaggreg, nNewProducts, nProducts)
-        mOffer = Support.row_product_disaggregation(mOffer, nNumDisaggregProducts, mPosDisaggreg,
-                                                    mMultipDisaggreg, nNewProducts, nProducts)
-        vImport = Support.row_product_disaggregation(vImport, nNumDisaggregProducts, mPosDisaggreg,
-                                                     mMultipDisaggreg, nNewProducts, nProducts)
-        vNameProduct = Support.name_disaggregation(vNameProduct, nNumDisaggregProducts, mPosDisaggreg,
-                                                   vNameProductDisaggreg, nProducts)
-        nProducts = nNewProducts
+            mOffer = Support.row_product_disaggregation(mOffer, nNumDisaggregProducts, mPosDisaggreg,
+                                                        mMultipDisaggreg, nNewProducts, nProducts)
+            vImport = Support.row_product_disaggregation(vImport, nNumDisaggregProducts, mPosDisaggreg,
+                                                         mMultipDisaggreg, nNewProducts, nProducts)
+            vNameProduct = Support.name_disaggregation(vNameProduct, nNumDisaggregProducts, mPosDisaggreg,
+                                                       vNameProductDisaggreg, nProducts)
+            nProducts = nNewProducts
     # ==================================================================================================================
     # Adjusting Trade and Transport for Products and for Sectors
     # ==================================================================================================================
 
-    lAdjust = lAdjustMargins
-    nAdjust = 0
-    while lAdjust:
+    while lAdjustMargins:
         if nAdjust == 0:
             nRowIni = vRowsTradeElim[0]
             nRowFim = vRowsTradeElim[1]
@@ -260,7 +263,7 @@ if __name__ == '__main__':
 
         nAdjust += 1
         if nAdjust == 2:
-            lAdjust = False
+            lAdjustMargins = False
 
     # ==================================================================================================================
     # Calculating coefficients without stock variation
