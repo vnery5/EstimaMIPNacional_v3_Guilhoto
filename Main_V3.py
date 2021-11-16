@@ -23,7 +23,7 @@ if __name__ == '__main__':
     # ... size of MIP (possible values: 0 - 12x12; 1 - 20x20; 2 - 107X51; 3 - 128x68)
     nDimension = 3
     # ... year to be estimated
-    nYear = 2011
+    nYear = 2019
 
     ## Constants that identify software version and software config version
     sVersionConfigSoft = "3.0"
@@ -451,7 +451,7 @@ if __name__ == '__main__':
     mZerosAV = np.zeros([nRowsAV, nColsDemand + 1])
     mAddedValue_Full = np.concatenate((mAddedValue, vAddedValue_Tot_Col, mZerosAV, vAddedValue_Tot_Col), axis=1)
 
-    # Concatenating all vector to form lower part of the MIP
+    # Concatenating all vectors to form lower part of the MIP
     mMIP_Lower = np.vstack((
         vRowImports, vRowImportTax, vRowIPI, vRowICMS, vRowOtherTaxes,  # payment sector
         vTotSP + vNatConsumption,  # total consumption (national at base prices + imports and taxes)
