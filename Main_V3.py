@@ -79,27 +79,24 @@ if __name__ == '__main__':
 
     ## Defining entry and out directories
     sDirectoryBaseInput = './Input/'
+    sDirectoryOutput = './Output/'
     if nDimension == 3:
         sDirectoryInput = './Input/Nível68/'
-        sDirectoryOutput = './Output/'
     elif nDimension == 1:
         sDirectoryInput = './Input/Nível20/'
-        sDirectoryOutput = './Output/'
     elif nDimension == 0:
         sDirectoryInput = './Input/Nível12/'
-        sDirectoryOutput = './Output/'
     else:
         sDirectoryInput = './InputRetro/Nível51/'
-        sDirectoryOutput = './Output/Nível51/'
 
-    ## String that identifies the Uses spreadsheet file
+    ## String that identifies the Uses' spreadsheet file
     sFileUses = f"{nSectors}_tab2_{nYear}.xls"
     # Sheet Names
     sSheetIntermedConsum = 'CI'  # Intermediate Consumption
     sSheetDemand = 'demanda'  # Final Demand
     sSheetAddedValue = 'VA'  # Added Value
 
-    ## String that identifies the Resources spreadsheet file
+    ## String that identifies the Resources' spreadsheet file
     sFileResources = f"{nSectors}_tab1_{nYear}.xls"
     sSheetOffer = 'oferta'  # Supply Components (taxes, margins and base prices)
     sSheetProduction = 'producao'  # Production (products x sectors)

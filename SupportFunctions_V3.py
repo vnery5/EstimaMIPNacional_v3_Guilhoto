@@ -47,7 +47,7 @@ def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols,
         Optional: Names and Columns of the desired TRU array
     """
 
-    ## Reading file as a dataframe
+    ## Reading files as a dataframe
     dSheet = read_file_excel(sDirectoryInput, sFile, sSheetName)
 
     ## Getting only the necessary values
@@ -84,7 +84,7 @@ def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols,
         ## If not requested, return only names
         else:
             return mTRU, vNameRows, vNameCols
-    ## If neither names or codes are requested, return only the names
+    ## If neither names nor codes are requested, return only the names
     else:
         return mTRU
 
@@ -121,7 +121,7 @@ def distribution_matrix_calcul(mIntermConsum, mDemand):
 def calculation_margin(mAlpha, mMatrixInput, nColRef, vRowErase):
     """
     Returns the margin matrix/array (transport, trade, IPI, ICMS and other taxes).
-    A important point: alongside other calculations, it assumes that margins are distributed
+    An important point: alongside other calculations, it assumes that margins are distributed
     in the same way as the market price consumption of each product.
     :param mAlpha: distribution matrix, calculated using the distribution_matrix_calc function
     :param mMatrixInput: supply matrix
@@ -171,7 +171,7 @@ def calculation_internal_matrix(mAlpha, mMatrixInput, nColRef):
         to the total product i consumption by all sectors.
         Calculated using the distribution_matrix_calc function.
     :param mMatrixInput: vector to be estimated (or matrix containing one column to be estimated)
-    :param nColRef: column number (0 for vectors, a integer for a matrix)
+    :param nColRef: column number (0 for vectors, an integer for a matrix)
     :return: mMatrixOutput: estimated matrix (product x sector)
     """
 
@@ -220,9 +220,9 @@ def payment_sector_total(mInput, nSectors):
 def load_number_disaggregations(sDirectoryInput, sFileAgregacao, sSheetNumeroAgregacoes):
     """
     Loads the number of aggregations/disaggregations of sectors or products, which can be changed
-    in the "Agregação.xlsx" or "Desagregação.xlsx" excel files.
+    in the "Agregação.xlsx" or "Desagregação.xlsx" Excel files.
     :param sDirectoryInput: directory of the file
-    :param sFileAgregacao: name of the excel file
+    :param sFileAgregacao: name of the Excel file
     :param sSheetNumeroAgregacoes: sheet name
     :return:
         nNumAggregDisaggregSectors: number of sectors to be aggregated/disaggregated
@@ -239,13 +239,13 @@ def load_disaggregations(sDirectoryInput, sFileDesagregacao, sSheetDesagregacoes
     """
     Loads aggregations or disaggregations
     :param sDirectoryInput: directory of the file
-    :param sFileDesagregacao: name of the excel file
+    :param sFileDesagregacao: name of the Excel file
     :param sSheetDesagregacoes: sheet name
     :param nNumDisaggreg: number of sectors/products to be aggregated/disaggregated
         (see load_NumAggreg_Disaggreg function)
     :param nIndice: number of sectors/products in matrix (set by nDimension)
     :return:
-        mPosDisaggreg: array (nNumDisaggred x 1) containing the indices of the sectors/products
+        mPosDisaggreg: array (nNumDisaggreg x 1) containing the indices of the sectors/products
             to be disaggregated in the original IBGE matrix
         mMultipDisaggreg: array containing the multiples to be used for the disaggregation
             (the aggregated value presented in IBGE's matrix is going to be multiplied by these)
@@ -291,7 +291,7 @@ def column_sector_disaggregation(mArray, nNumDisaggreg, vPosDisaggreg, vMultipli
     :param nNewIndex: number of sectors WITH the disaggregations;
     :param nIndex: number of sectors WITHOUT the disaggregations;
     :return:
-        mNewArray: mArray with the disaggregated sectors (and all of the other ones)
+        mNewArray: mArray with the disaggregated sectors (and all the other ones)
     """
 
     ## Getting shape of the matrix and creating the structure of the new one
@@ -345,7 +345,7 @@ def row_product_disaggregation(mArray, nNumDisaggreg, vPosDisaggreg, vMultiplier
     :param nNewIndex: number of products WITH the disaggregations
     :param nIndex: number of products WITHOUT the disaggregations
     :return:
-        mNewArray: mArray with the disaggregated products (and all of the other ones)
+        mNewArray: mArray with the disaggregated products (and all the other ones)
     """
 
     ## Getting shape of the matrix and creating the structure of the new one
@@ -418,7 +418,7 @@ def name_disaggregation(vNames, nNumDisaggreg, vPosDisaggreg, vNamesDisaggreg, n
             vNewName.append(vNamesDisaggreg[nDisaggreg])
             nDisaggreg += 1
 
-            ## Updating nRow for the loop (in cases where dissagregated products/sectors are not together)
+            ## Updating nRow for the loop (in cases where disaggregated products/sectors are not together)
             if nDisaggreg < nNumDisaggreg:
                 nRow = vPosDisaggreg[nDisaggreg]
 
@@ -550,7 +550,7 @@ def write_data_excel(FileName, lSheetName, lDataSheet, lRowsLabel, lColsLabel):
     :return: Nothing; an Excel file is written in the "Output" directory.
     """
 
-    ## Creating Writer object (allows to write multiple sheets into a single file)
+    ## Creating Writer object (allows multiple sheets into a single file)
     Writer = pd.ExcelWriter('./Output/' + FileName, engine='openpyxl')
     # List that will contain the dataframes
     lDataFrames = []
