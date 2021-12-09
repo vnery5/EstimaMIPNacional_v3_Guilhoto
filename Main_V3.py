@@ -136,21 +136,21 @@ if __name__ == '__main__':
     # ==================================================================================================================
 
     # Intermediate Consumption
-    mIntermConsum, vNameProduct, vNameSector = \
+    mIntermConsum, vNameProduct, vNameSector, vCodeProduct, vCodeSector = \
         Support.load_tru(sDirectoryInput, sFileUses, sSheetIntermedConsum,
-                         nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nSectors, names=True)
+                         nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nSectors, bNames=True, bCodes=True)
     # Final Demand
     mDemand, vNameProduct1, vNameDemand = \
         Support.load_tru(sDirectoryInput, sFileUses, sSheetDemand,
-                         nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nColsDemand, names=True)
+                         nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nColsDemand, bNames=True)
     # Added Value
     mAddedValue, vNameAddedValue, vNameSector1 = \
         Support.load_tru(sDirectoryInput, sFileUses, sSheetAddedValue,
-                         nRowIni=5, nColIni=1, nRows=nRowsAV, nCols=nSectors, names=True)
+                         nRowIni=5, nColIni=1, nRows=nRowsAV, nCols=nSectors, bNames=True)
     # Supply
     mOffer, vNameProduct2, vNameOffer = \
         Support.load_tru(sDirectoryInput, sFileResources, sSheetOffer,
-                         nRowIni=5, nColIni=nColIniOffer, nRows=nProducts, nCols=nColsOffer, names=True)
+                         nRowIni=5, nColIni=nColIniOffer, nRows=nProducts, nCols=nColsOffer, bNames=True)
     # Production
     mProduction = Support.load_tru(sDirectoryInput, sFileResources, sSheetProduction,
                                    nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nSectors)

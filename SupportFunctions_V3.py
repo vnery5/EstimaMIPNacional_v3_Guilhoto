@@ -30,7 +30,7 @@ def read_file_excel(sDirectory, sFileName, sSheetName):
 
 # ============================================================================================
 
-def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols, names=False):
+def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols, bNames=False, bCodes=False):
     """
     Reads the respective tru and returns the correspondent numpy array
     :param sDirectoryInput: directory containing the files
@@ -40,7 +40,8 @@ def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols,
     :param nColIni: initial column to read from (Excel - 1)
     :param nRows: number of rows to read
     :param nCols: number of columns to read
-    :param names: whether to get names of the rows/columns
+    :param bNames: whether to get names of the rows/columns
+    :param bCodes: whether to get codes of the rows/columns
     :return:
         mTRU: desired TRU array \n
         Optional: Names and Columns of the desired TRU array
@@ -55,8 +56,8 @@ def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols,
     mTRU = mTRU.astype(float)
 
     ### Reading names and codes (if requested)
-    if names:
-        ## Reading product's names
+    if bNames:
+        ## Reading row's names
         vNameRows = list(dSheet.values[nRowIni:nRowIni + nRows, nColIni - 1])
 
         # Columns: we use the shape to determine whether they are sectors or other names and read accordingly
@@ -70,7 +71,20 @@ def load_tru(sDirectoryInput, sFile, sSheetName, nRowIni, nColIni, nRows, nCols,
         # Removing \n and putting in spaces
         vNameCols = [s.replace("\n", " ") for s in vNameCols]
 
-        return mTRU, vNameRows, vNameCols
+        ## Reading codes (if requested)
+        if bCodes:
+            # Rows (usually, products) codes (one column before the names)
+            vCodeRows = list(dSheet.values[nRowIni:nRowIni + nRows, nColIni - 2])
+
+            # Columns (usually, sectors) codes
+            vCodeCols = dSheet.values[nRowIni - 2, nColIni:nColIni + nCols]
+            vCodeCols = [s[:4] for s in vCodeCols]
+
+            return mTRU, vNameRows, vNameCols, vCodeRows, vCodeCols
+        ## If not requested, return only names
+        else:
+            return mTRU, vNameRows, vNameCols
+    ## If neither names or codes are requested, return only the names
     else:
         return mTRU
 
@@ -553,10 +567,10 @@ def write_data_excel(FileName, lSheetName, lDataSheet, lRowsLabel, lColsLabel):
         # Getting max value within DataFrame
         nMax = np.amax(dfData.values)
         # Defining float format (show more decimal columns when values are smaller)
-        sFloatFormat = "%.6f" if nMax <= 4 else "%.2f"
+        # sFloatFormat = "%.6f" if nMax <= 4 else "%.2f"
 
         ## Writing to Excel
-        lDataFrames[nSheet].to_excel(Writer, lSheetName[nSheet], freeze_panes=(1, 1), float_format=sFloatFormat)
+        lDataFrames[nSheet].to_excel(Writer, lSheetName[nSheet], freeze_panes=(1, 1))
 
     ## Saving file
     Writer.save()
