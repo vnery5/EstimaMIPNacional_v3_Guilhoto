@@ -32,6 +32,13 @@ if __name__ == '__main__':
     ## Disaggregate or aggregate products/sectors?
     bAggregateDisaggregate = False  # True or False
 
+    ## Estimate at this year's or last year's prices?
+    bThisYearPrices = True
+
+    ## TRUs indexes
+    nIndexUses = 2 if bThisYearPrices else 4
+    nIndexResources = 1 if bThisYearPrices else 3
+
     ## Lists that contain the correspondent parameters for each MIP Dimension
     vProducts = [12, 20, 107, 128]  # number of products
     vSectors = [12, 20, 51, 68]  # number of sectors
@@ -90,14 +97,14 @@ if __name__ == '__main__':
         sDirectoryInput = './InputRetro/Nível51/'
 
     ## String that identifies the Uses' spreadsheet file
-    sFileUses = f"{nSectors}_tab2_{nYear}.xls"
+    sFileUses = f"{nSectors}_tab{nIndexUses}_{nYear}.xls"
     # Sheet Names
     sSheetIntermedConsum = 'CI'  # Intermediate Consumption
     sSheetDemand = 'demanda'  # Final Demand
     sSheetAddedValue = 'VA'  # Added Value
 
     ## String that identifies the Resources' spreadsheet file
-    sFileResources = f"{nSectors}_tab1_{nYear}.xls"
+    sFileResources = f"{nSectors}_tab{nIndexResources}_{nYear}.xls"
     sSheetOffer = 'oferta'  # Supply Components (taxes, margins and base prices)
     sSheetProduction = 'producao'  # Production (products x sectors)
     sSheetImport = 'importacao'  # Imports (products x 1 vector)
@@ -142,7 +149,7 @@ if __name__ == '__main__':
                          nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nColsDemand, bNames=True)
     # Added Value
     mAddedValue, vNameAddedValue, vNameSector1 = \
-        Support.load_tru(sDirectoryInput, sFileUses, sSheetAddedValue,
+        Support.load_tru(sDirectoryInput, f"{nSectors}_tab2_{nYear}.xls", sSheetAddedValue,
                          nRowIni=5, nColIni=1, nRows=nRowsAV, nCols=nSectors, bNames=True)
     # Supply
     mOffer, vNameProduct2, vNameOffer = \
@@ -151,10 +158,15 @@ if __name__ == '__main__':
     # Production
     mProduction = Support.load_tru(sDirectoryInput, sFileResources, sSheetProduction,
                                    nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=nSectors)
-    # Imports
-    vImport = Support.load_tru(sDirectoryInput, sFileResources, sSheetImport,
-                               nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=1)
 
+    # Imports (three columns until 2009 for nDimension == 2)
+    if nYear < 2010 and nDimension == 2:
+        vImport = np.sum(Support.load_tru(sDirectoryInput, sFileResources, sSheetImport,
+                                          nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=3), axis=1, keepdims=True)
+
+    else:
+        vImport = Support.load_tru(sDirectoryInput, sFileResources, sSheetImport,
+                                   nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=1)
     # ==================================================================================================================
     # Import values of disaggregation
     # ==================================================================================================================
