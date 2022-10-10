@@ -603,7 +603,7 @@ if __name__ == '__main__':
     ## 2010
     vDataSheet = [arr_MIP[0, 0, :, :]]
     ## 2011-19
-    for nYear in range(nFirstYear + 1, nLastYear):
+    for nYear in range(nFirstYear + 1, nLastYear + 1):
         for nDim in range(3):
             if nYear in lYearsToWrite:
                 vDataSheet.append(arr_MIP[nDim, nYear - nFirstYear, :, :])
@@ -613,7 +613,7 @@ if __name__ == '__main__':
     vSheetNames = [f"MIP_{nFirstYear}"]
     ## 2011-19
     vMIPNames = ["PCorrentes", "PAno_Anterior", "Deflacionada"]
-    for nYear in range(nFirstYear + 1, nLastYear):
+    for nYear in range(nFirstYear + 1, nLastYear + 1):
         for sNome in vMIPNames:
             if nYear in lYearsToWrite:
                 vSheetNames.append(f"MIP_{nYear}_{sNome}")
@@ -621,14 +621,14 @@ if __name__ == '__main__':
     # Column Labels
     lColumnLabels = np.hstack((vNameSector, vNameDemand))
     vColumnLabels = [lColumnLabels]
-    for nYear in range(nFirstYear + 1, nLastYear):
+    for nYear in range(nFirstYear + 1, nLastYear + 1):
         for nDim in range(3):
             if nYear in lYearsToWrite:
                 vColumnLabels.append(lColumnLabels)
 
     # Row Labels
     vRowLabels = [vNameSector]
-    for nYear in range(nFirstYear + 1, nLastYear):
+    for nYear in range(nFirstYear + 1, nLastYear + 1):
         for nDim in range(3):
             if nYear in lYearsToWrite:
                 vRowLabels.append(vNameSector)
