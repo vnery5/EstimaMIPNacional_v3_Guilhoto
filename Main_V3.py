@@ -167,6 +167,7 @@ if __name__ == '__main__':
     else:
         vImport = Support.load_tru(sDirectoryInput, sFileResources, sSheetImport,
                                    nRowIni=5, nColIni=nColIni, nRows=nProducts, nCols=1)
+
     # ==================================================================================================================
     # Import values of disaggregation
     # ==================================================================================================================
@@ -211,6 +212,7 @@ if __name__ == '__main__':
             vNameProduct = Support.name_disaggregation(vNameProduct, nNumDisaggregProducts, mPosDisaggreg,
                                                        vNameProductDisaggreg, nProducts)
             nProducts = nNewProducts
+
     # ==================================================================================================================
     # Adjusting Trade and Transport for Products and for Sectors
     # ==================================================================================================================
@@ -344,11 +346,11 @@ if __name__ == '__main__':
     ## Creating total consumption matrix
     mTotalConsum = np.concatenate((mIntermConsum, mDemand), axis=1)
 
-    ## Subtracting all margins in taxes in order to arrive at consumption in base prices (not market ones)
+    ## Subtracting all margins in taxes in order to arrive at NATIONAL consumption in base prices (not market ones)
     mConsumBasePrice = \
         mTotalConsum - mMarginTrade - mMarginTransport - mIPI - mICMS - mOtherTaxes - mImport - mImportTax
 
-    ### Creating E Matrix with basic price
+    ### Creating E Matrix in basic prices
     ## Getting final demand in base prices
     mE = mConsumBasePrice[:, nSectors:]
 
@@ -370,13 +372,14 @@ if __name__ == '__main__':
     vRowTotProductionTrans = np.sum(mProductionTrans, axis=0)
 
     # For each product, calculate the proportion of production made by each sector
-    # relative to the total production of product j (∑mD rows = 1)
+    # relative to the total production of product j (∑mD cols (across rows) = 1)
     mD = mProductionTrans / vRowTotProductionTrans[None, :]
     # Checking for NaNs and infinities
     mD = np.nan_to_num(mD, nan=0, posinf=0, neginf=0)
 
     # Creating X Vector (total production by sector in consumer prices)
-    vX = mAddedValue[nRowTotalProduction, 0:nSectors]
+    vX = np.sum(mProduction, axis=0)
+    vX_Products = np.sum(mProduction, axis=1)
 
     # Creating Matrix of National Coefficients - Bn Matrix
     # (proportion of the product i that sector j consumed relative to the total production of sector j)
@@ -402,6 +405,7 @@ if __name__ == '__main__':
     # For each sector, multiply the direct technical coefficient by the sector's total production,
     # which equals the intermediate consumption by sector j from the production of sector i
     mZ = mA * vX[None, :]
+    mIC_Product = mProd * vX_Products[None, :]
 
     # Creating Y Matrix (nSectors x 6 (components of demand))
     # mD: proportion of production made by each sector i relative to the total production of product j
